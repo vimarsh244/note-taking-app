@@ -1,29 +1,37 @@
 import React, { useContext } from 'react';
-import { NotesContext } from '../App';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { NotesContext } from '../App';
+import { v4 as uuidv4 } from 'uuid';
 
 function NoteList() {
-  const { notes, setNotes, setEditMode, setNoteIndex } = useContext(NotesContext);
-
-  const handleDelete = (index) => {
-    setNotes(notes.filter((note, i) => i !== index));
-  };
-
-  const handleEdit = (index) => {
-    setEditMode(true);
-    setNoteIndex(index);
-  };
+    const { notes, setNotes } = useContext(NotesContext);
+    const navigate = useNavigate();
+  
+    const createNote = () => {
+      const newNote = { id: uuidv4(), title: 'New Note', content: '' };
+      setNotes([...notes, newNote]);
+    };
+  
+    const deleteNote = (id) => {
+      const newNotes = notes.filter((note) => note.id !== id);
+      setNotes(newNotes);
+      navigate('/'); // Navigate to home page after deleting a note
+    };
 
   return (
-    <ul>
-      {notes.map((note, index) => (
-        <li key={index}>
-          <Link to={`/${note.name}`}>{note.name}</Link>
-          <button onClick={() => handleEdit(index)}>Edit</button>
-          <button onClick={() => handleDelete(index)}>Delete</button>
-        </li>
+    <div>
+      {notes.map((note) => (
+        <div key={note.id}>
+          <Link to={`/${note.id}`}>
+            <h2>{note.title}</h2>
+            <p>{note.content.substring(0, 100)}</p>
+          </Link>
+          <button onClick={() => deleteNote(note.id)}>Delete</button>
+        </div>
       ))}
-    </ul>
+      <button onClick={createNote}>Create New Note</button>
+    </div>
   );
 }
 

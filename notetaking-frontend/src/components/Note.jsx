@@ -1,22 +1,26 @@
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import MDEditor from '@uiw/react-md-editor';
 import { NotesContext } from '../App';
-import ReactMarkdown from 'react-markdown';
-import sanitize from 'rehype-sanitize';
+import { useParams } from 'react-router-dom';
 
 function Note() {
-  const { noteName } = useParams();
-  const { notes } = useContext(NotesContext);
-  const note = notes.find(note => note.name === noteName);
+  const { notes, setNotes } = useContext(NotesContext);
+  const { id } = useParams();
+  const note = notes.find((note) => note.id === id);
+
+  const handleEdit = (content) => {
+    const newNotes = notes.map((n) => (n.id === id ? { ...n, content } : n));
+    setNotes(newNotes);
+  };
 
   if (!note) {
-    return <p>Note not found</p>;
+    return null;
   }
 
   return (
     <div>
-      <h1>{note.name}</h1>
-      <ReactMarkdown children={note.content} rehypePlugins={[sanitize]} />
+      <h2>{note.title}</h2>
+      <MDEditor value={note.content || ''} onChange={handleEdit} />
     </div>
   );
 }

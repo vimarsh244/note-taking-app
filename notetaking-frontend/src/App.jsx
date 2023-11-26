@@ -1,27 +1,39 @@
-import React, { createContext, useState } from 'react';
-import NoteForm from './components/NoteForm';
+import React, { createContext, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NoteList from './components/NoteList';
 import Note from './components/Note';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-export const NotesContext = React.createContext();
+import './App.css'; // Import the CSS file
+
+// Create a context to share notes state across components
+export const NotesContext = createContext();
 
 function App() {
-  const [notes, setNotes] = useState([]);
-  const [editMode, setEditMode] = useState(false);
-  const [noteIndex, setNoteIndex] = useState(null);
+  
+  // State for notes
+  const [notes, setNotes] = useState(() => {
+    const savedNotes = localStorage.getItem('notes');
+    if (savedNotes) {
+      return JSON.parse(savedNotes);
+    } else {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes, editMode, setEditMode, noteIndex, setNoteIndex }}>
+    <NotesContext.Provider value={{ notes, setNotes }}>
       <Router>
-        <div style={{ display: 'flex' }}>
-          <div style={{ flex: 1 }}>
-            <NoteForm />
+        <div className="App">
+          <div className="NoteList">
             <NoteList />
           </div>
-          <div style={{ flex: 2 }}>
+          <div className="Note">
             <Routes>
-              <Route path="/:noteName" element={<Note />} />
+              <Route path="/:id" element={<Note />} />
             </Routes>
           </div>
         </div>
