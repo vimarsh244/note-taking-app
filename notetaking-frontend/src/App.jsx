@@ -6,9 +6,11 @@ export const NotesContext = createContext();
 
 export function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [noteIndex, setNoteIndex] = useState(null);
 
   return (
-    <NotesContext.Provider value={{ notes, setNotes }}>
+    <NotesContext.Provider value={{ notes, setNotes, editMode, setEditMode, noteIndex, setNoteIndex }}>
       {children}
     </NotesContext.Provider>
   );

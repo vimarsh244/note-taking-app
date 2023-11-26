@@ -1,15 +1,29 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { NotesContext } from '../App';
 import MDEditor from '@uiw/react-md-editor';
 
+
 function NoteForm() {
-    const { setNotes } = useContext(NotesContext);
+    const { notes, setNotes, editMode, setEditMode, noteIndex, setNoteIndex } = useContext(NotesContext);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
   
+    useEffect(() => {
+      if (editMode) {
+        setTitle(notes[noteIndex].title);
+        setContent(notes[noteIndex].content);
+      }
+    }, [editMode]);
+  
     const handleSubmit = (event) => {
       event.preventDefault();
-      setNotes((prevNotes) => [...prevNotes, { title, content }]);
+      if (editMode) {
+        setNotes(notes.map((note, i) => i === noteIndex ? { title, content } : note));
+        setEditMode(false);
+        setNoteIndex(null);
+      } else {
+        setNotes((prevNotes) => [...prevNotes, { title, content }]);
+      }
       setTitle('');
       setContent('');
     };
@@ -27,7 +41,7 @@ function NoteForm() {
           value={content}
           onChange={setContent}
         />
-        <button type="submit">Add note</button>
+        <button type="submit">{editMode ? 'Update note' : 'Add note'}</button>
       </form>
     );
   }
