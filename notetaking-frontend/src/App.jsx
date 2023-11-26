@@ -5,6 +5,14 @@ import Note from './components/Note';
 
 import './App.css'; // Import the CSS file
 
+import '@mdxeditor/editor/style.css'
+
+// importing the editor and the plugin from their full paths
+import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
+import { headingsPlugin } from '@mdxeditor/editor/plugins/headings'
+
+
+
 // Create a context to share notes state across components
 export const NotesContext = createContext();
 

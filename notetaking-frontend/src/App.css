@@ -30,3 +30,18 @@
     flex: 2;
   }
 }
+
+
+.Note h1 {
+  margin: 0;
+  font-size: 2rem;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.Note h1:focus {
+  border-bottom: 2px solid #646cff;
+}
