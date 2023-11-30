@@ -6,9 +6,15 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 3000;
+const dotenv = require('dotenv');
+DB_CONNECTION_STRING= dotenv.config().parsed.DB_CONNECTION_STRING;
+
+console.log(DB_CONNECTION_STRING);
+
+
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/note-taking-app', {
+mongoose.connect(DB_CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -22,6 +28,9 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+
+const cors = require('cors')
+app.use(cors())
 
 // Middleware for parsing JSON
 app.use(express.json());
