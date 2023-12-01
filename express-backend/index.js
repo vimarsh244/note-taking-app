@@ -11,6 +11,8 @@ DB_CONNECTION_STRING= dotenv.config().parsed.DB_CONNECTION_STRING;
 
 console.log(DB_CONNECTION_STRING);
 
+app.use(express.static('public'));
+
 
 
 // Connect to MongoDB
@@ -165,11 +167,11 @@ app.put('/api/notes/:noteID', authenticateToken, async (req, res) => {
 app.delete('/api/notes/:noteID', authenticateToken, async (req, res) => {
   try {
     const noteID = req.params.noteID;
-    console.log('Received noteID:', noteID);
+    // console.log('Received noteID:', noteID);
 
     const deletedNote = await Note.findOneAndDelete({ noteID: noteID, userId: req.user.userId });
     
-    console.log('Deleted note:', deletedNote)
+    // console.log('Deleted note:', deletedNote)
     if (!deletedNote) {
       return res.status(404).json({ message: 'Note not found' });
     }
@@ -232,7 +234,7 @@ app.get('/api/notes2/search', authenticateToken, async (req, res) => {
 
     const notes = await Note.find({ userId: userId, content: { $regex: searchQuery, $options: 'i' } });
 
-    console.log(notes);
+    // console.log(notes);
     res.status(200).json(notes);
   } catch (error) {
     console.error('Error searching notes:', error);

@@ -12,14 +12,14 @@
   transition: color 0.5s, background-color 0.5s;
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     color: #ffffff;
     background-color: #213547;

@@ -9,6 +9,7 @@ function NavBar() {
     const handleLogout = () => {
         localStorage.removeItem('logged_in');
         localStorage.removeItem('token');
+        localStorage.removeItem('notes');
         navigate('/');
         setTimeout(() => {
             window.location.reload();
