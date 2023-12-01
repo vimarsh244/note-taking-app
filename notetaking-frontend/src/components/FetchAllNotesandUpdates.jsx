@@ -21,6 +21,7 @@ export const fetchNotes = async (token_temp) => {
         };
     });
 
+    console.log(parsedData);
 
     localStorage.setItem("notes", JSON.stringify(parsedData));
 };
