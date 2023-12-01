@@ -190,6 +190,7 @@ app.get('/api/notes', authenticateToken, async (req, res) => {
 
     const notes = await Note.find({ userId });
 
+    console.log('Notes:', notes);
     res.status(200).json(notes);
   } catch (error) {
     console.error('Error fetching notes:', error);

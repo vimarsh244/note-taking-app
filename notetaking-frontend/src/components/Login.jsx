@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { fetchNotes } from './FetchAllNotesandUpdates';
+// import './FetchAllNotesandUpdates';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -15,11 +17,17 @@ function Login() {
     setUsername('');
     setPassword('');
     setLoginSuccess(true);
+    const token_temp = response.data.token;
+    const response2 = fetchNotes(token_temp);
+    // FetchAllNotesandUpdates.fetchNotes();
+    
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 1000);
+
   };
 
+  
   return (
     <div>
       {loginSuccess && <p>Login successful!</p>}
