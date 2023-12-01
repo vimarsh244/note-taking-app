@@ -210,8 +210,14 @@ app.get('/api/notes/search', authenticateToken, async (req, res) => {
     const filteredNotes = notes.filter(note => note.content.includes(searchQuery) || note.title.includes(searchQuery) || note.tags.includes(searchQuery));
     const noteIDs = filteredNotes.map(note => note.noteID);
 
-    console.log(noteIDs);
-    res.status(200).json(noteIDs);
+    // console.log(noteIDs);
+
+    const noteData = filteredNotes.map(note => ({ title: note.title, noteID: note.noteID }));
+
+    
+    // res.status(200).json(noteIDs);    
+    res.status(200).json(noteData);
+
   } catch (error) {
     console.error('Error searching notes:', error);
     res.status(500).json({ message: 'Internal server error' });
