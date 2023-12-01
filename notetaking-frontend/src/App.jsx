@@ -4,6 +4,7 @@ import NoteList from './components/NoteList';
 import Note from './components/Note';
 import Login from './components/Login';
 import Registration from './components/Registration';
+import NavBar from './components/NavBar';
 
 import './App.css'; // Import the CSS file
 
@@ -47,8 +48,10 @@ function App() {
   // }, [loggedIn]);
 
   return (
+    
     <NotesContext.Provider value={{ notes, setNotes }}>
       <Router>
+        <NavBar />
         {loggedIn ? (
           <div className="App">
             <div className="NoteList">

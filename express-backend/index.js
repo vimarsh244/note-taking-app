@@ -186,7 +186,7 @@ app.delete('/api/notes/:noteID', authenticateToken, async (req, res) => {
 // Fetch all notes of a user
 app.get('/api/notes', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const notes = await Note.find({ userId });
 
@@ -200,11 +200,32 @@ app.get('/api/notes', authenticateToken, async (req, res) => {
 // Search for content in notes belonging to a particular user
 app.get('/api/notes/search', authenticateToken, async (req, res) => {
   try {
+    const userId = req.user.userId;
+    const searchQuery = req.query.query;
+
+    const notes = await Note.find({ userId });
+    // console.log(notes);
+    // const filteredNotes = notes.filter(note => note.content.includes(searchQuery));
+    // also search for title & tags
+    const filteredNotes = notes.filter(note => note.content.includes(searchQuery) || note.title.includes(searchQuery) || note.tags.includes(searchQuery));
+    const noteIDs = filteredNotes.map(note => note.noteID);
+
+    console.log(noteIDs);
+    res.status(200).json(noteIDs);
+  } catch (error) {
+    console.error('Error searching notes:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.get('/api/notes2/search', authenticateToken, async (req, res) => {
+  try {
     const userId = req.user.id;
-    const searchQuery = req.query.q;
+    const searchQuery = req.query.query;
 
-    const notes = await Note.find({ userId, content: { $regex: searchQuery, $options: 'i' } });
+    const notes = await Note.find({ userId: userId, content: { $regex: searchQuery, $options: 'i' } });
 
+    console.log(notes);
     res.status(200).json(notes);
   } catch (error) {
     console.error('Error searching notes:', error);

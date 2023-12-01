@@ -9,7 +9,7 @@ function NoteList() {
     const navigate = useNavigate();
   
     const createNote = () => {
-      const newNote = { id: uuidv4(), title: 'New Note', content: '' };
+      const newNote = { id: uuidv4(), title: '<New Note>', content: '' }; // creates new note, and it won't be saved in DB unless edited, but will be in localstorage
       setNotes([...notes, newNote]);
     };
   
