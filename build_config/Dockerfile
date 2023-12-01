@@ -11,6 +11,9 @@ COPY notetaking-frontend ./notetaking-frontend
 WORKDIR /app/notetaking-frontend
 RUN npm install
 
+#logging status
+RUN echo "Frontend dependencies installed"
+
 # Create .env file for notetaking-frontend
 RUN echo "VITE_SERVER_URL=http://localhost:3000" > .env
 
@@ -25,6 +28,10 @@ COPY express-backend .
 
 # Install the backend dependencies
 RUN npm install
+
+
+#logging status
+RUN echo "Backend dependencies installed"
 
 # Expose the port on which the server will run
 EXPOSE 3000
