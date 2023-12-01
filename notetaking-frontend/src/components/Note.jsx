@@ -17,52 +17,66 @@ function Note() {
   }, [note]);
 
   const handleEdit = (content) => {
-    const newNotes = notes.map((n) => (n.id === id ? { ...n, content } : n));
+    const updatedNote = { ...note, content };
+    const newNotes = notes.map((n) => (n.id === id ? updatedNote : n));
     setNotes(newNotes);
-    backupNotes(newNotes); // Backup notes after every edit
+    backupNotes(updatedNote); // Backup the updated note
   };
 
   const handleTitleChange = (e) => {
     setTitle(e.target.innerText);
-    const newNotes = notes.map((n) =>
-      n.id === id ? { ...n, title: e.target.innerText } : n
-    );
+    const updatedNote = { ...note, title: e.target.innerText };
+    const newNotes = notes.map((n) => (n.id === id ? updatedNote : n));
     setNotes(newNotes);
-    backupNotes(newNotes); // Backup notes after title change
+    backupNotes(updatedNote); // Backup the updated note
   };
 
-  const backupNotes = async (notes) => {
+  const backupNotes = async (note) => {
     try {
+      console.log(note);
       const authToken = localStorage.getItem("token");
-      for (let note of notes) {
-        await axios.put(
-          `${import.meta.env.VITE_SERVER_URL}/api/notes/${note._id}`,
-          {
-            title: note.title,
-            content: note.content,
-            lastUpdated: note.lastUpdated,
-            userId: note.userId
-          },
-          { headers: { Authorization: `Bearer ${authToken}` } }
-        );
-      }
+      await axios.put(
+        `${import.meta.env.VITE_SERVER_URL}/api/notes/${note.id}`,
+        {
+          title: note.title,
+          content: note.content,
+        },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
     } catch (error) {
-      console.error("Error during notes backup:", error);
+      console.error("Error during note backup:", error);
     }
   };
-
   const deleteNote = async () => {
     try {
-      const authToken = localStorage.getItem("authToken");
+      const authToken = localStorage.getItem("token");
       await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` },
-      }); // Replace '/api/notes' with your API endpoint
+      });
       const newNotes = notes.filter((n) => n.id !== id);
       setNotes(newNotes);
+      // Remove the note from the backend
+      await axios.delete(
+        `${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`,
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
     } catch (error) {
       console.error("Error during note deletion:", error);
     }
   };
+
+  // const deleteNote = async () => {
+  //   try {
+  //     const authToken = localStorage.getItem("token");
+  //     await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`, {
+  //       headers: { Authorization: `Bearer ${authToken}` },
+  //     });
+  //     const newNotes = notes.filter((n) => n.id !== id);
+  //     setNotes(newNotes);
+  //   } catch (error) {
+  //     console.error("Error during note deletion:", error);
+  //   }
+  // };
 
   if (!note) {
     return null;
@@ -87,26 +101,3 @@ function Note() {
 }
 
 export default Note;
-
-/*
-    <div>
-        <h1 
-  contentEditable={true} 
-  suppressContentEditableWarning={true} 
-  onBlur={handleTitleChange} 
-  onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
->
-  {title}
-</h1>
-
-      <MDEditor value={note.content || ''} onChange={handleEdit} />
-
-
-
-    </div>
-  );
-}
-
-export default Note;
-
-*/
