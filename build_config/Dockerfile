@@ -4,18 +4,15 @@ FROM node:lts-alpine
 # Set the working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
-COPY notetaking-frontend/package*.json ./
+# Copy the frontend code
+COPY notetaking-frontend ./notetaking-frontend
 
 # Install the frontend dependencies
+WORKDIR /app/notetaking-frontend
 RUN npm install
 
 # Create .env file for notetaking-frontend
-RUN echo "VITE_SERVER_URL=http://localhost:3000" > /app/notetaking-frontend/.env
-
-
-# Copy the frontend code
-COPY notetaking-frontend .
+RUN echo "VITE_SERVER_URL=http://localhost:3000" > .env
 
 # Build the frontend code
 RUN npm run build
