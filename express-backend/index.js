@@ -6,8 +6,11 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 3000;
+
 const dotenv = require('dotenv');
-DB_CONNECTION_STRING= dotenv.config().parsed.DB_CONNECTION_STRING;
+dotenv.config();
+
+const DB_CONNECTION_STRING = process.env.DB_CONNECTION_STRING;
 
 console.log(DB_CONNECTION_STRING);
 
