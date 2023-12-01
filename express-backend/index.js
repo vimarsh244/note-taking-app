@@ -113,6 +113,7 @@ const noteSchema = new mongoose.Schema({
   content: { type: String, required: true },
   noteID: { type: String, required: true, unique: true },
   userId: { type: String, ref: 'User', required: true},
+  tags: { type: Array, required: false},
 });
 
 const Note = mongoose.model('Note', noteSchema);
@@ -135,14 +136,16 @@ app.post('/api/notes', authenticateToken, async (req, res) => {
 //update note (if not there iw ill also create note)
 app.put('/api/notes/:noteID', authenticateToken, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body;
     const noteID = req.params.noteID;
-    const userID = req.user.id;
+    const userID = req.user.userId;
 
-    console.log('Received noteID:', noteID);
 
-    const filter = { noteID: noteID};
-    const update = { title, content, userId: userID};
+    // console.log('User ID:', userID);
+    // console.log('Received noteID:', noteID);
+
+    const filter = { noteID: noteID, userId: userID};
+    const update = { title, content, tags};
     const options = { new: true, upsert: true }; // upsert option for creating a new document if not found
 
     const updatedNote = await Note.findOneAndUpdate(filter, update, options);
@@ -162,9 +165,11 @@ app.put('/api/notes/:noteID', authenticateToken, async (req, res) => {
 app.delete('/api/notes/:noteID', authenticateToken, async (req, res) => {
   try {
     const noteID = req.params.noteID;
+    console.log('Received noteID:', noteID);
 
-    const deletedNote = await Note.findOneAndDelete({ noteID: noteID });
-
+    const deletedNote = await Note.findOneAndDelete({ noteID: noteID, userId: req.user.userId });
+    
+    console.log('Deleted note:', deletedNote)
     if (!deletedNote) {
       return res.status(404).json({ message: 'Note not found' });
     }

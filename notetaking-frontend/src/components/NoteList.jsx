@@ -27,7 +27,7 @@ function NoteList() {
             <h2>{note.title}</h2>
             <p>{note.content.substring(0, 100)}</p>
           </Link>
-          <button onClick={() => deleteNote(note.id)}>Delete</button>
+          {/* <button onClick={() => deleteNote(note.id)}>Delete</button>  */} {/* not in mood to integrate delete note on two seperate components, can use api and things but nahhh */}
         </div>
       ))}
       <button onClick={createNote}>Create New Note</button>

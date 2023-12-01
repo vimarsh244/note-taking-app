@@ -11,9 +11,11 @@ function Note() {
   const { id } = useParams();
   const note = notes.find((note) => note.id === id);
   const [title, setTitle] = useState(note ? note.title : "");
+  const [tags, setTags] = useState(note ? note.tags : []);
 
   useEffect(() => {
     setTitle(note ? note.title : "");
+    setTags(note ? note.tags : []);
   }, [note]);
 
   const handleEdit = (content) => {
@@ -31,6 +33,14 @@ function Note() {
     backupNotes(updatedNote); // Backup the updated note
   };
 
+  const handleTagChange = (e) => {
+    setTags(e.target.value.split(","));
+    const updatedNote = { ...note, tags: e.target.value.split(",") };
+    const newNotes = notes.map((n) => (n.id === id ? updatedNote : n));
+    setNotes(newNotes);
+    backupNotes(updatedNote); // Backup the updated note
+  };
+
   const backupNotes = async (note) => {
     try {
       console.log(note);
@@ -40,6 +50,7 @@ function Note() {
         {
           title: note.title,
           content: note.content,
+          tags: note.tags,
         },
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
@@ -47,6 +58,7 @@ function Note() {
       console.error("Error during note backup:", error);
     }
   };
+
   const deleteNote = async () => {
     try {
       const authToken = localStorage.getItem("token");
@@ -56,27 +68,13 @@ function Note() {
       const newNotes = notes.filter((n) => n.id !== id);
       setNotes(newNotes);
       // Remove the note from the backend
-      await axios.delete(
-        `${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`,
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
+      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
     } catch (error) {
       console.error("Error during note deletion:", error);
     }
   };
-
-  // const deleteNote = async () => {
-  //   try {
-  //     const authToken = localStorage.getItem("token");
-  //     await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/notes/${id}`, {
-  //       headers: { Authorization: `Bearer ${authToken}` },
-  //     });
-  //     const newNotes = notes.filter((n) => n.id !== id);
-  //     setNotes(newNotes);
-  //   } catch (error) {
-  //     console.error("Error during note deletion:", error);
-  //   }
-  // };
 
   if (!note) {
     return null;
@@ -93,7 +91,16 @@ function Note() {
         {title}
       </h1>
 
+
       <MDEditor value={note.content || ""} onChange={handleEdit} />
+
+
+      <input
+        type="text"
+        value={tags ? tags.join(",") : ""}
+        onChange={handleTagChange}
+        placeholder="Add tags (comma-separated)"
+      />
 
       <button onClick={deleteNote}>Delete Note</button>
     </div>
